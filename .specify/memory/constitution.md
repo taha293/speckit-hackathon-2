@@ -1,55 +1,63 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Version change: [CONSTITUTION_VERSION_OLD] -> 1.0.0
+List of modified principles:
+  - Phase Evolution Contract (Added)
+  - Development Rules (Added)
+  - Architecture & Quality Principles (Added)
+  - AI & Cloud Governance (Added)
+  - Authority (Added)
+Added sections:
+  - Phase Evolution Contract
+  - AI & Cloud Governance
+  - Authority
+Removed sections:
+  - [SECTION_2_NAME], [SECTION_3_NAME] (merged/replaced by concrete sections)
+Templates requiring updates:
+  - .specify/templates/plan-template.md (✅ updated)
+  - .specify/templates/spec-template.md (✅ updated)
+  - .specify/templates/tasks-template.md (✅ updated)
+Follow-up TODOs:
+  - Identify original RATIFICATION_DATE (set to 2025-12-31 as today)
+-->
 
-## Core Principles
+# Spec Constitution – Evolution of Todo
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+## Purpose
+This project is built using **Spec-Driven Development**.
+Specifications define system behavior, architecture, and evolution.
+All code is generated exclusively via Claude Code using Spec-Kit Plus.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+## Development Rules
+- Manual code writing or editing is not allowed. All changes must originate from updated specifications.
+- All changes must originate from updated specifications.
+- If implementation is incorrect, the specification must be refined instead of patching the code directly.
+- Each phase must be fully specified (spec, plan, tasks) before implementation begins.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+## Phase Evolution Contract
+The system evolves incrementally across five phases. Each phase must preserve previous behavior unless explicitly redefined:
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+- **Phase I**: Console application, in-memory state, single user.
+- **Phase II**: Persistent storage, authentication, multi-user web app.
+- **Phase III**: AI agents interacting through MCP-defined tools.
+- **Phase IV**: Containerized, Kubernetes-native deployment.
+- **Phase V**: Event-driven, distributed, cloud-scale architecture.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+## Architecture & Quality Principles
+- **Separation of Concerns**: Clear boundaries between models, services, and interfaces.
+- **Predictability**: Deterministic behavior is mandatory.
+- **Error Handling**: Explicit handling of all error paths; no silent failures.
+- **Statelessness**: Services must be stateless from Phase III onward.
+- **Idempotency**: Operations should be idempotent where applicable to ensure reliability.
 
-### [PRINCIPLE_6_NAME]
+## AI & Cloud Governance
+- **Tool-Mediated Action**: AI agents may only act through approved tools and MCP servers.
+- **Mutation Control**: Direct state mutation by agents is forbidden; all mutations must be via specifications.
+- **Reproducibility**: Infrastructure must be declarative (IaC) and fully reproducible.
+- **Security**: Secrets and configuration must never be hardcoded; use environment variables or secret managers.
 
+## Authority
+- **Specification Supremacy**: In any conflict, specifications override code.
+- **Constitution Supremacy**: The constitution overrides all other documents and practices.
+- **Code Temporality**: Code is disposable; specifications are permanent and represent the truth of the system.
 
-[PRINCIPLE__DESCRIPTION]
-
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
-
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
-
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
-
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
-
-## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
-
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
-
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2025-12-31 | **Last Amended**: 2025-12-31

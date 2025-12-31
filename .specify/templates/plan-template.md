@@ -31,7 +31,12 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+- [ ] **Specs-Only Development**: Are all proposed changes originating from specs? NO manual overrides.
+- [ ] **Current Phase Alignment**: Does this plan respect the constraints of the current phase (Phase I - V)?
+- [ ] **Separation of Concerns**: Is the proposed architecture modular?
+- [ ] **Error Handling**: Are all failure modes identified and handled?
+- [ ] **Statelessness/Idempotency**: If Phase III+, is the design stateless? Are mutations idempotent?
+- [ ] **Security**: Are secrets handled via env/secret manager? NO hardcoding.
 
 ## Project Structure
 
