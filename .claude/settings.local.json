@@ -4,7 +4,10 @@
       "Bash(git fetch:*)",
       "Bash(git checkout:*)",
       "Bash(uv run pytest:*)",
-      "mcp__github__get_me"
+      "mcp__github__get_me",
+      "WebSearch",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__query-docs"
     ]
   }
 }
