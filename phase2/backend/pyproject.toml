@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "todo-backend-api"
+version = "1.0.0"
+description = "Backend API for Todo application with JWT authentication"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "fastapi>=0.104.1",
+    "sqlmodel>=0.0.16",
+    "uvicorn>=0.24.0",
+    "bcrypt>=4.1.2",
+    "passlib>=1.7.4",
+    "python-jose[cryptography]>=3.3.0",
+    "psycopg2-binary>=2.9.9",
+    "pydantic>=2.5.0",
+    "python-multipart>=0.0.6",
+    "alembic>=1.13.1",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0",
+    "flake8>=6.0",
+    "mypy>=1.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["*"]
+
+[project.scripts]
+start = "main:main"

@@ -1,0 +1,457 @@
+openapi: 3.0.0
+info:
+  title: Backend JWT Authentication API
+  description: Secure todo application backend with JWT authentication
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000/api/v1
+    description: Development server
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                password:
+                  type: string
+                  format: password
+                  minLength: 8
+                  example: securepassword123
+      responses:
+        '200':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User created successfully"
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Email already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/login:
+    post:
+      summary: Authenticate user and get JWT token
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                password:
+                  type: string
+                  format: password
+                  example: securepassword123
+      responses:
+        '200':
+          description: Successful authentication
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  refresh_token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  token_type:
+                    type: string
+                    example: "bearer"
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/refresh:
+    post:
+      summary: Refresh access token using refresh token
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - refresh_token
+              properties:
+                refresh_token:
+                  type: string
+                  example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+      responses:
+        '200':
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  token_type:
+                    type: string
+                    example: "bearer"
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Invalid refresh token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /tasks:
+    get:
+      summary: Get all tasks for authenticated user
+      tags:
+        - Tasks
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of user's tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Create a new task for authenticated user
+      tags:
+        - Tasks
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+              properties:
+                title:
+                  type: string
+                  minLength: 1
+                  maxLength: 200
+                  example: "Buy groceries"
+                description:
+                  type: string
+                  maxLength: 1000
+                  example: "Milk, bread, eggs"
+      responses:
+        '200':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /tasks/{task_id}:
+    get:
+      summary: Get a specific task
+      tags:
+        - Tasks
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Task details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Update a specific task
+      tags:
+        - Tasks
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  minLength: 1
+                  maxLength: 200
+                  example: "Buy groceries"
+                description:
+                  type: string
+                  maxLength: 1000
+                  example: "Milk, bread, eggs"
+                completed:
+                  type: boolean
+                  example: true
+      responses:
+        '200':
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Delete a specific task
+      tags:
+        - Tasks
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Task deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Task deleted successfully"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /tasks/{task_id}/complete:
+    patch:
+      summary: Toggle completed status of a task
+      tags:
+        - Tasks
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - completed
+              properties:
+                completed:
+                  type: boolean
+                  example: true
+      responses:
+        '200':
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Task:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        user_id:
+          type: string
+          format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        title:
+          type: string
+          example: "Buy groceries"
+        description:
+          type: string
+          example: "Milk, bread, eggs"
+        completed:
+          type: boolean
+          example: false
+        created_at:
+          type: string
+          format: date-time
+          example: "2023-10-20T10:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2023-10-20T10:00:00Z"
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
+          example: "Error message details"
