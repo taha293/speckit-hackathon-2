@@ -1,0 +1,307 @@
+openapi: 3.0.3
+info:
+  title: Todo Application Frontend API
+  description: API contracts for the frontend to backend communication
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000/api/v1
+    description: Development server
+  - url: https://api.todoapp.com/v1
+    description: Production server
+
+paths:
+  /auth/login:
+    post:
+      summary: User login
+      description: Authenticate user with email and password, returns JWT token for Better Auth to manage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: User's email address
+                password:
+                  type: string
+                  format: password
+                  description: User's password
+      responses:
+        '200':
+          description: Successful authentication
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: JWT authentication token to be managed by Better Auth
+                  user:
+                    $ref: '#/components/schemas/User'
+                  refreshToken:
+                    type: string
+                    description: Refresh token for extending session
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized - invalid credentials
+
+  /auth/signup:
+    post:
+      summary: User registration
+      description: Register a new user account via backend, returns JWT token for Better Auth to manage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: User's email address
+                password:
+                  type: string
+                  format: password
+                  description: User's password
+                name:
+                  type: string
+                  description: User's display name (optional)
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: JWT authentication token to be managed by Better Auth
+                  user:
+                    $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid input or email already exists
+
+  /tasks:
+    get:
+      summary: Get user's tasks
+      description: Retrieve all tasks for the authenticated user
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: List of user's tasks
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tasks:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Task'
+        '401':
+          description: Unauthorized - invalid or expired token
+    post:
+      summary: Create a new task
+      description: Create a new task for the authenticated user
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskInput'
+      responses:
+        '201':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  task:
+                    $ref: '#/components/schemas/Task'
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized - invalid or expired token
+
+  /tasks/{id}:
+    get:
+      summary: Get a specific task
+      description: Retrieve a specific task by ID for the authenticated user
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Task ID
+      responses:
+        '200':
+          description: Task details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  task:
+                    $ref: '#/components/schemas/Task'
+        '401':
+          description: Unauthorized - invalid or expired token
+        '404':
+          description: Task not found
+    put:
+      summary: Update a task
+      description: Update an existing task for the authenticated user
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Task ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskInput'
+      responses:
+        '200':
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  task:
+                    $ref: '#/components/schemas/Task'
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized - invalid or expired token
+        '404':
+          description: Task not found
+    delete:
+      summary: Delete a task
+      description: Remove a task for the authenticated user
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Task ID
+      responses:
+        '204':
+          description: Task deleted successfully
+        '401':
+          description: Unauthorized - invalid or expired token
+        '404':
+          description: Task not found
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique user identifier
+        email:
+          type: string
+          format: email
+          description: User's email address
+        name:
+          type: string
+          description: User's display name
+        createdAt:
+          type: string
+          format: date-time
+          description: Account creation timestamp
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last account update timestamp
+
+    Task:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique task identifier
+        title:
+          type: string
+          maxLength: 200
+          description: Task title
+        description:
+          type: string
+          maxLength: 1000
+          description: Optional task description
+        completed:
+          type: boolean
+          description: Whether the task is completed
+          default: false
+        createdAt:
+          type: string
+          format: date-time
+          description: Task creation timestamp
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last task update timestamp
+        userId:
+          type: string
+          description: ID of the user who owns this task
+        dueDate:
+          type: string
+          format: date-time
+          description: Optional due date for the task
+
+    TaskInput:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 200
+          description: Task title (required)
+        description:
+          type: string
+          maxLength: 1000
+          description: Optional task description
+        completed:
+          type: boolean
+          description: Whether the task is completed
+        dueDate:
+          type: string
+          format: date-time
+          description: Optional due date for the task
+      required:
+        - title
