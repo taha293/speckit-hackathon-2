@@ -13,7 +13,13 @@
       "Bash(.specify/scripts/powershell/setup-plan.ps1:*)",
       "Bash(.specify/scripts/powershell/check-prerequisites.ps1:*)",
       "Bash(python test_app.py:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(npm install)",
+      "Bash(npx next build)",
+      "Bash(npm install @better-auth/react)",
+      "Bash(npm uninstall:*)",
+      "Bash(powershell -ExecutionPolicy Bypass -File \".specify/scripts/powershell/check-prerequisites.ps1\" -Json -RequireTasks -IncludeTasks:*)",
+      "Bash(npm run build)"
     ]
   }
 }

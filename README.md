@@ -17,7 +17,7 @@ The system is designed to showcase how a simple concept—a Todo list—can scal
 | Phase | Milestone | Focus Area | Status |
 | :--- | :--- | :--- | :--- |
 | **Phase I** | **CLI Foundation** | In-memory, single-user, rich console interface. | ✅ **Released** |
-| **Phase II** | **Web & Persistence** | Multi-user support, authentication, and persistent storage. | ⏳ Planned |
+| **Phase II** | **Web & Persistence** | Multi-user support, authentication, and persistent storage. | ✅ **Released** |
 | **Phase III** | **AI Agent Fabric** | Integration via MCP (Model Context Protocol). | ⏳ Planned |
 | **Phase IV** | **Orchestration** | Containerization and Kubernetes-native architecture. | ⏳ Planned |
 | **Phase V** | **Cloud-Scale** | Event-driven, distributed, serverless infrastructure. | ⏳ Planned |
